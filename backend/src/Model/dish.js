@@ -7,6 +7,6 @@ const dishSchema = new mongoose.Schema({
   isPublished: { type: Boolean, default: true },
 });
 
-const Dish = mongoose.model("Dish", dishSchema);
+const DishModel = mongoose.model("Dish", dishSchema);
 
-export default Dish;
+export default DishModel;
