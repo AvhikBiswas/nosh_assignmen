@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import "dotenv/config";
 
-const databaseUrl = process.env.databaseUrl;
+const databaseUrl = process.env.DATABASEURL;
 const DBconnect = async () => {
   try {
     await mongoose.connect(databaseUrl);

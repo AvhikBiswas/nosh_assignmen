@@ -1,7 +1,16 @@
-import DishModel from "../Model/dish";
+import DishModel from "../Model/dish.js";
 
 class Dish {
-  static async insertBulk(dishes) {
+  static instance;
+
+  constructor() {
+    if (Dish.instance) {
+      return Dish.instance;
+    }
+    Dish.instance = this;
+  }
+
+  async insertBulk(dishes) {
     try {
       const result = await DishModel.insertMany(dishes);
       return result;
@@ -9,32 +18,27 @@ class Dish {
       throw new Error("Error inserting dishes: " + error.message);
     }
   }
-  static async findPublishedDishes() {
+
+  async findPublishedDishes() {
     try {
-      const result = await DishModel.find({
-        $where: (isPublished = true),
-      });
+      const result = await DishModel.find({ isPublished: true });
       return result;
     } catch (error) {
-      throw new Error("Error in featching public dishes: " + error.message);
+      throw new Error("Error fetching published dishes: " + error.message);
     }
   }
 
-  static async findAllDishes() {
+  async findAllDishes() {
     try {
       const result = await DishModel.find();
       return result;
     } catch (error) {
-      throw new Error("Error in featching all dishes: " + error.message);
+      throw new Error("Error fetching all dishes: " + error.message);
     }
   }
 
-  static async togglePublish(dishId) {
+  async togglePublish(dish) {
     try {
-      const dish = await DishModel.findById(dishId);
-      if (!dish) {
-        throw new Error("Dish not found");
-      }
       dish.isPublished = !dish.isPublished;
       const updatedDish = await dish.save();
       return updatedDish;
@@ -43,17 +47,19 @@ class Dish {
     }
   }
 
-  static async togglePublish(dishId) {
+  async findDish(dishId) {
     try {
-      const dish = await DishModel.findById(dishId);
+      const dish = await DishModel.findOne({ $where: (dishId = dishId) });
       if (!dish) {
         throw new Error("Dish not found");
       }
-      dish.isPublished = !dish.isPublished;
-      const updatedDish = await dish.save();
-      return updatedDish;
+      return dish;
     } catch (error) {
-      throw new Error("Error toggling publish status: " + error.message);
+      throw new Error("Error fetching dish: " + error.message);
     }
   }
 }
+
+// Export a singleton instance of the Dish class
+const dishInstance = new Dish();
+export default dishInstance;
