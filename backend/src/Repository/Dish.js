@@ -40,7 +40,6 @@ class Dish {
   async togglePublish(dishId) {
     try {
       const dish = await DishModel.findOne({ dishId });
-      console.log("dish", dish);
       if (!dish) {
         throw new Error("Dish not found");
       }
@@ -53,10 +52,8 @@ class Dish {
   }
 
   async findDish(dishId) {
-    console.log("dishId", dishId);
     try {
       const dish = await DishModel.findOne({ dishId });
-      console.log("dish", dish);
       if (!dish) {
         throw new Error("Dish not found");
       }
@@ -67,6 +64,5 @@ class Dish {
   }
 }
 
-// Export a singleton instance of the Dish class
 const dishInstance = new Dish();
 export default dishInstance;

@@ -2,13 +2,15 @@ import dishInstance from "../Repository/Dish.js";
 
 const toggleDish = async (dishId) => {
   try {
-    // const res = await dishInstance.findDish(dishId);
-    // console.log('res', res)
-    // if (res) {
-    const data = dishInstance.togglePublish(dishId);
-    return data;
+    const res = await dishInstance.findDish(dishId);
+    if (res) {
+      const data = dishInstance.togglePublish(dishId);
+      return data;
+    } else {
+      throw new Error("Somthing went Wrong");
+    }
   } catch (error) {
-    return error;
+    throw new Error("Somthing went Wrong" + error);
   }
 };
 
