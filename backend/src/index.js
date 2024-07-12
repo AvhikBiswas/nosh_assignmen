@@ -1,18 +1,64 @@
 import express from "express";
-import DBconnect from "./Config/db.js";
-import "dotenv/config";
+import http from "http";
+import { Server } from "socket.io";
+import cors from "cors";
 import apiRoutes from "./Routes/index.js";
+import DBconnect from "./Config/db.js";
+
 const app = express();
-const PORT = process.env.PORT || 8000;
+const server = http.createServer(app);
 
-app.use("/api", apiRoutes);
+let io;
 
-app.get("/", async (req, res) => {
-  res.send("i'm alive");
-});
+const initializeSocketIO = () => {
+  io = new Server(server, {
+    cors: {
+      origin: "http://localhost:5173",
+      methods: ["GET", "POST"],
+      credentials: true,
+    },
+  });
 
-app.listen(PORT, async () => {
+  io.on("connection", (socket) => {
+    console.log("Client connected:", socket.id);
+
+    socket.on("disconnect", () => {
+      console.log("Client disconnected:", socket.id);
+    });
+
+    socket.on("message", (data) => {
+      console.log("Message received:", data);
+      // Handle messages here
+    });
+  });
+};
+
+const startServer = async () => {
+  app.use(
+    cors({
+      origin: "http://localhost:5173",
+      methods: ["GET", "POST"],
+      credentials: true,
+    })
+  );
+  app.use(express.json());
+
+  app.get("/", (req, res) => {
+    res.send("I'm alive");
+  });
+
+  app.use("/api", apiRoutes);
+
   await DBconnect();
-  // await bulkInsert();
-  console.log("server running on ", PORT);
-});
+
+  initializeSocketIO();
+
+  const PORT = process.env.PORT || 8000;
+  server.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+};
+
+export {io};
+
+startServer();
