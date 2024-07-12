@@ -37,8 +37,13 @@ class Dish {
     }
   }
 
-  async togglePublish(dish) {
+  async togglePublish(dishId) {
     try {
+      const dish = await DishModel.findOne({ dishId });
+      console.log("dish", dish);
+      if (!dish) {
+        throw new Error("Dish not found");
+      }
       dish.isPublished = !dish.isPublished;
       const updatedDish = await dish.save();
       return updatedDish;
@@ -48,8 +53,10 @@ class Dish {
   }
 
   async findDish(dishId) {
+    console.log("dishId", dishId);
     try {
-      const dish = await DishModel.findOne({ $where: (dishId = dishId) });
+      const dish = await DishModel.findOne({ dishId });
+      console.log("dish", dish);
       if (!dish) {
         throw new Error("Dish not found");
       }

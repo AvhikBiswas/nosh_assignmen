@@ -1,4 +1,4 @@
-import dishInstance from "../Repository/Dish";
+import dishInstance from "../Repository/Dish.js";
 
 const getAllPublishedDishes = async () => {
   try {
@@ -10,4 +10,5 @@ const getAllPublishedDishes = async () => {
 };
 
 
+export default getAllPublishedDishes;
 
