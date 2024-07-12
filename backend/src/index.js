@@ -1,11 +1,13 @@
 import express from "express";
 import DBconnect from "./Config/db.js";
 import "dotenv/config";
-import bulkInsert from "./Services/bulkInsert.js";
-
+import apiRoutes from "./Routes/index.js";
 const app = express();
 const PORT = process.env.PORT || 8000;
-app.get("/",async (req, res) => {
+
+app.use("/api", apiRoutes);
+
+app.get("/", async (req, res) => {
   res.send("i'm alive");
 });
 
